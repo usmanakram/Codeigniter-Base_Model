@@ -3,8 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Base_Model extends CI_Model
 {
-	private $table;
-	private $primary_key;
+	protected $table;
+	protected $primary_key;
 
 	/**
 	 * $table: (String) (optional, if database table name and model name are same. eg: database.user & user_model)
@@ -96,6 +96,12 @@ class Base_Model extends CI_Model
 		return $this->db->insert($this->table, $data);
 	}
 
+	public function insert_n_get_id($data)
+	{
+		$this->db->insert($this->table, $data);
+		return $this->db->insert_id();
+	}
+
 	public function update($data, $where) {
 		return $this->db->update($this->table, $data, $where);
 	}
@@ -120,5 +126,19 @@ class Base_Model extends CI_Model
 		$this->db->where($this->primary_key, $id);
 		$this->db->set($field, $field . '+1', FALSE);
 		return $this->db->update($this->table);
+	}
+
+	public function insert_batch($data)
+	{
+		return $this->db->insert_batch($this->table, $data);
+	}
+
+	public function update_batch($data, $field_name) {
+		return $this->db->update_batch($this->table, $data, $field_name);
+	}
+
+	public function delete_batch($field_name, $field_values) {
+		$this->db->where_in($field_name, $field_values);
+		return $this->db->delete($this->table);
 	}
 }
