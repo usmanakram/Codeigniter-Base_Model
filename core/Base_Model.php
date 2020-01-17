@@ -64,26 +64,37 @@ class Base_Model extends CI_Model
 		return $this->db->get($this->table);
 	}
 
-	public function get_record($where = false)
+	public function get_record($where = false, $order = false)
 	{
+		if($order)
+		{
+			$this->db->order_by($order['by'], $order['type']);
+		}
 		$query = $this->get($where);
 		return $query->row_array();
 	}
 
-	public function get_records($where = false)
+	public function get_records($where = false, $order = false , $limit = false)
 	{
+		if($order)
+		{
+			$this->db->order_by($order['by'], $order['type']);
+		}
+		if ($limit) {
+			$this->db->limit($limit);
+		}
 		$query = $this->get($where);
 		return $query->result_array();
 	}
 
 	public function getByPK($id)
 	{
-		return $this->get_record( array($this->primary_key => $id) );
+		return $this->get_record([$this->primary_key => $id]);
 	}
 
 	public function getByFieldName($name, $value)
 	{
-		return $this->get_records(array($name => $value));
+		return $this->get_records([$name => $value]);
 	}
 
 	public function getAll()
@@ -108,7 +119,7 @@ class Base_Model extends CI_Model
 
 	public function updateByPK($data, $id)
 	{
-		return $this->update($data, array($this->primary_key => $id));
+		return $this->update($data, [$this->primary_key => $id]);
 	}
 
 	public function delete($where)
@@ -118,7 +129,7 @@ class Base_Model extends CI_Model
 
 	public function deleteByPK($id)
 	{
-		return $this->delete( array($this->primary_key => $id) );
+		return $this->delete([$this->primary_key => $id]);
 	}
 
 	public function incrementByPK($field, $id)
